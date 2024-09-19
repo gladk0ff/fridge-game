@@ -1,2 +1,6 @@
-<script setup></script>
-<template>Игра</template>
+<script setup>
+import BackButton from '_src/components/BackButton.vue';
+</script>
+<template>
+Игра
+</template>
