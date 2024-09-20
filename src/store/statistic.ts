@@ -29,8 +29,10 @@ export const addStatisticItem = async (data: IUserStatistic) => {
 }
 
 export const loadStatistic = async () => {
+  statistic.value.updating = true
   statistic.value.items = await getAllStatistics()
   statistic.value.items.push(...FAKE_STATISTIC)
+  statistic.value.updating = false
 }
 
 const FAKE_STATISTIC: IUserStatistic[] = [
