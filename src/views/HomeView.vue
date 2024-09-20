@@ -68,32 +68,30 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 100px;
   background: var(--p-yellow-600);
   width: 100%;
-  padding: 2rem;
+  padding: 1rem;
 }
 
 footer {
-  height: 100px;
   background: var(--p-yellow-800);
   width: 100%;
-  padding: 2rem;
+  padding: 1rem;
   display: flex;
   justify-content: end;
   color: var(--p-yellow-50);
   font-weight: bold;
-  font-size: 1.5rem;
+  font-size: 1rem;
 }
 
 .back-button-container {
   position: absolute;
-  left: 32px;
-  top: 120px;
+  left: 1rem;
+  top: 7rem;
 }
 
 .logout-button {
-  width: 64px;
+  width: 6rem;
 }
 .logout-button ::v-deep span {
   font-size: 2rem;

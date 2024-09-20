@@ -16,7 +16,7 @@ onMounted(() => {
     tableStyle="min-width: 50rem;min-height:"
     size="large"
     scrollable
-    scrollHeight="700px"
+    scrollHeight="35rem"
     :loading="statistic.updating"
   >
     <Column

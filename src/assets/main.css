@@ -7,7 +7,27 @@ body {
   padding: 0;
 }
 #app {
-  
   width: inherit;
   height: inherit;
+}
+
+@media screen and (width< 1180px) {
+  html,
+  body {
+    font-size: 10px;
+  }
+}
+
+@media screen and (width< 1440px) {
+  html,
+  body {
+    font-size: 12px;
+  }
+}
+
+@media screen and (width> 1440px) and (width< 1960px) {
+  html,
+  body {
+    font-size: 14px;
+  }
 }

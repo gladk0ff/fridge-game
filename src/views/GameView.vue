@@ -81,16 +81,14 @@ const isValidFood = (food) => {
       </template>
 
       <template v-else-if="isMemorise">
-        <h1>Так что же было в холодельнике?</h1>
+        <h1>Так что же было в холодельнике?(мин. 6 ;)</h1>
         <div class="food-collection">
           <div v-for="(food, index) of filtredAllFood" @click="chooseFood(food)" class="food">
             {{ food.title }}
           </div>
         </div>
         <template v-if="game.result.length">
-          <Divider type="solid" />
-
-          <div class="food-collection">
+          <div class="food-collection choosen">
             <div v-for="(food, index) of game.result" class="food">
               {{ food.title }}
             </div>
@@ -129,12 +127,13 @@ const isValidFood = (food) => {
 
       <template v-else>
         <h1>Нажми на холодельник !!</h1>
-        <p class="description">
-          ==> После того как будет открыт холодильник у Тебя будет некоторе время чтобы запомнить
-          некоторые продукты!
-          <br />
-          ==> Потом проверить насколько Ты хорош в этом =)
-        </p>
+        <ul class="description">
+          <li>
+            После того как будет открыт холодильник у Тебя будет некоторое время чтобы запомнить
+            продукты!
+          </li>
+          <li>Потом проверимнасколько Ты хорош в этом =)</li>
+        </ul>
       </template>
     </div>
 
@@ -152,7 +151,7 @@ const isValidFood = (food) => {
 
 <style scoped>
 h1 {
-  font-size: 5rem;
+  font-size: 4rem;
   background-color: var(--p-yellow-500);
   padding: 1rem;
 }
@@ -162,30 +161,33 @@ h1 {
   width: 100%;
   flex-direction: row;
   justify-content: space-around;
-  max-width: 1300px;
+  max-width: 130rem;
   gap: 2rem;
+  margin-top: 1rem;
 }
 
 .content {
   flex: 1;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   flex-direction: column;
-  gap: 3rem;
+  gap: 1rem;
   height: 100%;
 }
 
 .fridge {
-  flex: 0.9;
-  width: 620px;
-
+  flex: 0.8;
+  /* width: 620px; */
+  width: 62rem;
   display: flex;
   align-items: center;
+  padding-left: 4rem;
 }
 
 img {
   max-width: 100%;
-  max-height: 700px;
+  /* max-height: 700px; */
+  max-height: 36rem;
   object-fit: contain;
 }
 
@@ -195,11 +197,11 @@ img {
   align-items: center;
   flex-direction: column;
   gap: 1rem;
-  margin-left: 4rem;
+  margin-left: 3rem;
 }
 
 .food {
-  padding: 1rem 2rem;
+  padding: 0.5rem 1rem;
   background-color: var(--p-blue-200);
   font-size: 2rem;
   color: var(--p-yellow-900);
@@ -208,11 +210,12 @@ img {
 }
 
 .description {
-  font-size: 3rem;
+  font-size: 2.5rem;
   padding: 1rem;
   background-color: var(--p-yellow-300);
   border: 8px dotted var(--p-yellow-500);
   margin: 0;
+  padding-left: 3rem;
 }
 
 .timer {
@@ -251,5 +254,11 @@ h2 {
 .actions {
   display: flex;
   gap: 1rem;
+}
+.choosen {
+  margin-top: 1rem;
+}
+.choosen .food {
+  border-color: var(--p-blue-500);
 }
 </style>
