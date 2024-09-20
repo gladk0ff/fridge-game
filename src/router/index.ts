@@ -20,11 +20,11 @@ export const router = createRouter({
           name: 'base',
           component: MainView
         },
-        {
-          path: '/about',
-          name: 'about',
-          component: AboutView
-        },
+        // {
+        //   path: '/about',
+        //   name: 'about',
+        //   component: AboutView
+        // },
         {
           path: '/statistics',
           name: 'statistics',

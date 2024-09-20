@@ -13,37 +13,34 @@ export enum GameState {
   MEMORISED = 'MEMORISED'
 }
 
-interface IGame {
+export interface IGame {
   user: IUser | null
   score: number
   gameSet: IFood[]
-  start: boolean
   time: number
   result: IFood[]
   state: GameState
 }
 
-const INITIAL_GAME_STATE = {
+export const game = ref<IGame>({
   user: null,
   score: 0,
-  start: false,
   state: GameState.NEW,
   gameSet: [],
   result: [],
   time: 0
-}
-
-export const game = ref<IGame>(INITIAL_GAME_STATE)
+})
 
 let pinnedTime: number
 let timerId: number
 let elapsed = 0
 
-watch(game.value.result, (result) => {
-  console.log('watch', result)
-
-  if (result.length === game.value.gameSet.length) stopMemorise()
-})
+watch(
+  () => game.value.result.length,
+  (result) => {
+    if (result && result === game.value.gameSet.length) stopMemorise()
+  }
+)
 
 export const addUserToGame = (user: IUser) => {
   game.value.user = user
@@ -62,18 +59,16 @@ export const stopMemorise = () => {
 }
 
 export const resetGame = () => {
-  game.value = INITIAL_GAME_STATE
+  game.value.state = GameState.NEW
+  game.value.score = 0
+  game.value.time = 0
+  game.value.result = []
 }
+
 export const startGame = () => {
   if (game.value.state !== GameState.NEW) return
   game.value.gameSet = generateGameSet()
-  game.value.score = 0
-  game.value.time = 0
   game.value.state = GameState.START
-}
-
-export const stopGame = () => {
-  game.value.state = GameState.FINISHED
 }
 
 const startTimer = () => {

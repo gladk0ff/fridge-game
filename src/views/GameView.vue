@@ -1,6 +1,8 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import { authStore } from '@S/store/auth'
+import { addStatisticItem } from '@S/store/statistic'
+import { useRouter, RouterLink } from 'vue-router'
 import Divider from 'primevue/divider'
 import Button from 'primevue/button'
 import {
@@ -10,7 +12,8 @@ import {
   GameState,
   startMemorise,
   foodCollection,
-  chooseFood
+  chooseFood,
+  resetGame
 } from '@S/store/game'
 import FridgeClose from '@S/assets/fridge-close.png'
 import FridgeOpen from '@S/assets/fridge-open.png'
@@ -21,6 +24,7 @@ const ROUND_LIMIT = 3
 
 onMounted(() => {
   addUserToGame(authStore.value.user)
+  resetGame()
 })
 
 watch(
@@ -31,6 +35,13 @@ watch(
       roundTimer = setInterval(() => {
         roundLimit.value--
       }, 1000)
+    }
+    if (state === GameState.FINISHED) {
+      const { user, score, time } = game.value
+      addStatisticItem({
+        user,
+        statistic: { score, time }
+      })
     }
   }
 )
@@ -47,6 +58,8 @@ const isNew = computed(() => game.value.state === GameState.NEW)
 const isStart = computed(() => game.value.state === GameState.START)
 const isMemorise = computed(() => game.value.state === GameState.MEMORISED)
 const isFinished = computed(() => game.value.state === GameState.FINISHED)
+
+console.log('game.value.state', game.value.state)
 
 const filtredAllFood = computed(() => {
   return foodCollection.filter((f) => {
@@ -100,14 +113,16 @@ const isValidFood = (food) => {
             >
           </h2>
           <div class="actions">
-            <Button label="Еще раз" icon="pi pi-refresh" size="large" />
-            <Button
-              label="Посмотреть Статистику"
-              icon="pi pi-chart-bar"
-              text
-              size="large"
-              severity="help"
-            />
+            <Button label="Еще раз" icon="pi pi-refresh" size="large" @click="resetGame" />
+            <RouterLink :to="{ name: 'statistics' }">
+              <Button
+                label="Посмотреть Статистику"
+                icon="pi pi-chart-bar"
+                text
+                size="large"
+                severity="help"
+              />
+            </RouterLink>
           </div>
         </div>
       </template>

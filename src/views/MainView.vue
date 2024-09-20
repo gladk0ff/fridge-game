@@ -14,11 +14,11 @@ const menus = [
   {
     link: '/rules',
     name: 'Правила'
-  },
-  {
-    link: '/about',
-    name: 'О проекте'
   }
+  // {
+  //   link: '/about',
+  //   name: 'О проекте'
+  // }
 ]
 </script>
 <template>
