@@ -6,6 +6,13 @@ interface IFood {
   title: string
 }
 
+export enum GameState {
+  NEW = 'NEW',
+  START = 'START',
+  FINISHED = 'FINISHED',
+  MEMORISED = 'MEMORISED'
+}
+
 interface IGame {
   user: IUser | null
   score: number
@@ -13,48 +20,60 @@ interface IGame {
   start: boolean
   time: number
   result: IFood[]
+  state: GameState
 }
 
-export const game = ref<IGame>({
+const INITIAL_GAME_STATE = {
   user: null,
   score: 0,
   start: false,
+  state: GameState.NEW,
   gameSet: [],
   result: [],
   time: 0
-})
+}
+
+export const game = ref<IGame>(INITIAL_GAME_STATE)
 
 let pinnedTime: number
 let timerId: number
 let elapsed = 0
 
-watch(
-  () => game.value.start,
-  (start) => {
-    if (start) {
-      game.value.gameSet = generateGameSet()
-      game.value.score = 0
-      game.value.time = 0
-    } else {
-      // startTimer()
-    }
-  }
-)
+watch(game.value.result, (result) => {
+  console.log('watch', result)
 
-watch(
-  () => game.value.result,
-  (result) => {
-    if (result.length === game.value.gameSet.length) stopTimer()
-  }
-)
+  if (result.length === game.value.gameSet.length) stopMemorise()
+})
 
-export const startGame = (user: IUser) => {
+export const addUserToGame = (user: IUser) => {
   game.value.user = user
-  game.value.start = true
+}
+
+export const startMemorise = () => {
+  game.value.state = GameState.MEMORISED
+  startTimer()
+}
+
+export const stopMemorise = () => {
+  game.value.state = GameState.FINISHED
+  stopTimer()
+  game.value.score = calcResult()
+  game.value.time = parseFloat((elapsed / 1000).toFixed(1))
+}
+
+export const resetGame = () => {
+  game.value = INITIAL_GAME_STATE
+}
+export const startGame = () => {
+  if (game.value.state !== GameState.NEW) return
+  game.value.gameSet = generateGameSet()
+  game.value.score = 0
+  game.value.time = 0
+  game.value.state = GameState.START
 }
 
 export const stopGame = () => {
-  game.value.start = false
+  game.value.state = GameState.FINISHED
 }
 
 const startTimer = () => {
@@ -66,15 +85,12 @@ const startTimer = () => {
 
 const stopTimer = () => {
   clearInterval(timerId)
-  game.value.score = calcResult()
-  game.value.time = parseFloat((elapsed / 1000).toFixed(1))
 }
 
 const calcResult = () => {
-  return game.value.gameSet.reduce((acc, item) => {
-    const isRight = game.value.gameSet.includes(item)
+  return game.value.result.reduce((acc, item) => {
+    const isRight = game.value.gameSet.find((r) => r.id === item.id)
     if (isRight) acc += 1
-    else acc -= 1
     return acc
   }, 0)
 }
@@ -90,7 +106,11 @@ export const generateGameSet = () => {
   return result
 }
 
-const foodCollection: IFood[] = [
+export const chooseFood = (food: IFood) => {
+  game.value.result.push(food)
+}
+
+export const foodCollection: IFood[] = [
   {
     id: 1,
     title: 'Сосиски'

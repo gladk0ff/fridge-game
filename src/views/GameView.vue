@@ -1,7 +1,17 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { authStore } from '@S/store/auth'
-import { startGame, stopGame, game } from '@S/store/game'
+import Divider from 'primevue/divider'
+import Button from 'primevue/button'
+import {
+  startGame,
+  game,
+  addUserToGame,
+  GameState,
+  startMemorise,
+  foodCollection,
+  chooseFood
+} from '@S/store/game'
 import FridgeClose from '@S/assets/fridge-close.png'
 import FridgeOpen from '@S/assets/fridge-open.png'
 
@@ -9,11 +19,14 @@ let roundTimer
 const roundLimit = ref(0)
 const ROUND_LIMIT = 3
 
+onMounted(() => {
+  addUserToGame(authStore.value.user)
+})
+
 watch(
-  () => game.value.start,
-  (start) => {
-    if (start) {
-      console.log('start', start)
+  () => game.value.state,
+  (state) => {
+    if (state === GameState.START) {
       roundLimit.value = ROUND_LIMIT
       roundTimer = setInterval(() => {
         roundLimit.value--
@@ -25,22 +38,82 @@ watch(
 watch(roundLimit, (val) => {
   if (!val) {
     clearInterval(roundTimer)
-    stopGame()
     roundLimit.value = ROUND_LIMIT
+    startMemorise()
   }
 })
+
+const isNew = computed(() => game.value.state === GameState.NEW)
+const isStart = computed(() => game.value.state === GameState.START)
+const isMemorise = computed(() => game.value.state === GameState.MEMORISED)
+const isFinished = computed(() => game.value.state === GameState.FINISHED)
+
+const filtredAllFood = computed(() => {
+  return foodCollection.filter((f) => {
+    return !game.value.result.find((r) => f.id === r.id)
+  })
+})
+
+const isValidFood = (food) => {
+  return game.value.gameSet.find((f) => f.id === food.id)
+}
 </script>
 
 <template>
   <div class="container">
     <div class="content">
-      <template v-if="game.start">
+      <template v-if="isStart">
         <h1>Обратный отсчет:</h1>
         <span class="timer">{{ roundLimit }}</span>
       </template>
 
+      <template v-else-if="isMemorise">
+        <h1>Так что же было в холодельнике?</h1>
+        <div class="food-collection">
+          <div v-for="(food, index) of filtredAllFood" @click="chooseFood(food)" class="food">
+            {{ food.title }}
+          </div>
+        </div>
+        <template v-if="game.result.length">
+          <Divider type="solid" />
+
+          <div class="food-collection">
+            <div v-for="(food, index) of game.result" class="food">
+              {{ food.title }}
+            </div>
+          </div>
+        </template>
+      </template>
+
+      <template v-else-if="isFinished">
+        <h1>Итак, что тут у нас :</h1>
+        <div class="food-collection">
+          <div v-for="food of game.result" class="food" :class="{ wrong: !isValidFood(food) }">
+            {{ food.title }}
+          </div>
+        </div>
+
+        <div class="result">
+          <h2>
+            ИТОГО:<span class="description">
+              {{ game.score }} из {{ game.gameSet.length }} за {{ game.time }}c</span
+            >
+          </h2>
+          <div class="actions">
+            <Button label="Еще раз" icon="pi pi-refresh" size="large" />
+            <Button
+              label="Посмотреть Статистику"
+              icon="pi pi-chart-bar"
+              text
+              size="large"
+              severity="help"
+            />
+          </div>
+        </div>
+      </template>
+
       <template v-else>
-        <h1 v-if="!game.start">Нажми на холодельник !!</h1>
+        <h1>Нажми на холодельник !!</h1>
         <p class="description">
           ==> После того как будет открыт холодильник у Тебя будет некоторе время чтобы запомнить
           некоторые продукты!
@@ -51,10 +124,12 @@ watch(roundLimit, (val) => {
     </div>
 
     <div class="fridge">
-      <img v-show="game.start" :src="FridgeClose" alt="" @click="startGame(authStore.user)" />
-      <img v-show="!game.start" :src="FridgeOpen" alt="" @click="startGame" />
-      <div v-if="!game.start" class="food-set">
-        <div v-for="(food, index) of game.gameSet" class="food">{{ food.title }}</div>
+      <img v-show="isNew || isMemorise" :src="FridgeClose" alt="" @click="startGame" />
+      <img v-show="isStart || isFinished" :src="FridgeOpen" alt="" />
+      <div v-if="isStart || isFinished" class="food-set">
+        <div v-for="food of game.gameSet" class="food">
+          {{ food.title }}
+        </div>
       </div>
     </div>
   </div>
@@ -130,5 +205,36 @@ img {
   text-align: center;
   font-weight: bold;
   color: var(--p-red-500);
+}
+
+.food-collection {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.wrong {
+  color: white;
+  background-color: var(--p-red-300);
+}
+
+h2 {
+  margin: 0;
+  font-size: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.result {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
 }
 </style>
