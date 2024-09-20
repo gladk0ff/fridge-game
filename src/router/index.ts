@@ -5,10 +5,10 @@ import SignUp from '../views/SignUp.vue'
 import MainView from '../views/MainView.vue'
 import AboutView from '../views/AboutView.vue'
 import StatisticsView from '../views/StatisticsView.vue'
-import GameView from '_src/views/GameView.vue'
-import RulesView from '_src/views/RulesView.vue'
+import GameView from '@S/views/GameView.vue'
+import RulesView from '@S/views/RulesView.vue'
 
-const router = createRouter({
+export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
@@ -45,6 +45,9 @@ const router = createRouter({
     {
       path: '/sign-up',
       name: 'signUp',
+      beforeEnter: () => {
+        if (authStore.value.isAuth) return { name: 'base' }
+      },
       component: SignUp
     }
   ]

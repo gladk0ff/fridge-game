@@ -2,9 +2,9 @@
 import { RouterView, useRouter, useRoute } from 'vue-router'
 import Avatar from 'primevue/avatar'
 import Button from 'primevue/button'
-import { signOut } from '_src/store/auth'
+import { signOut } from '@S/store/auth'
 import { computed } from 'vue'
-import BackButton from '_src/components/BackButton.vue'
+import BackButton from '@S/components/BackButton.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -39,7 +39,7 @@ const handleSingOut = () => {
       </div>
       <RouterView />
     </main>
-    <footer>gladk0ff</footer>
+    <footer>сделал gladk0ff</footer>
   </div>
 </template>
 
@@ -81,6 +81,9 @@ footer {
   padding: 2rem;
   display: flex;
   justify-content: end;
+  color: var(--p-yellow-50);
+  font-weight: bold;
+  font-size: 1.5rem;
 }
 
 .back-button-container {

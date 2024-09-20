@@ -3,12 +3,14 @@ import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import FloatLabel from 'primevue/floatlabel'
 import { ref, computed } from 'vue'
-import { signUp } from '_src/store/auth'
-import { useRouter, useRoute } from 'vue-router'
+import { signUp } from '@S/store/auth'
+import { useRouter, } from 'vue-router'
 
 const router = useRouter()
 const name = ref('')
 const submitting = ref(false)
+
+beforeRouteEnter
 
 const isValid = computed(() => {
   return name.value && name.value.length > 4

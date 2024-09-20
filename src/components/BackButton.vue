@@ -14,7 +14,7 @@ const goBack = () => {
 
 <style lang="css" scoped>
 .back-button {
-  width: 75px;
+  width: 65px;
 }
 
 .back-button ::v-deep span {
