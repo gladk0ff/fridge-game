@@ -8,9 +8,6 @@ import BackButton from '@S/components/BackButton.vue'
 
 const router = useRouter()
 const route = useRoute()
-
-console.log('route', route)
-
 const isHomeRoute = computed(() => route.name === 'base')
 
 const handleSingOut = () => {

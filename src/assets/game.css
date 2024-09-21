@@ -1,0 +1,8 @@
+.food {
+  padding: 0.5rem 1rem;
+  background-color: var(--p-blue-200);
+  font-size: 2rem;
+  color: var(--p-yellow-900);
+  font-weight: bold;
+  border: 4px dashed var(--p-yellow-900);
+}

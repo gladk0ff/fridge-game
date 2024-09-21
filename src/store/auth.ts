@@ -1,9 +1,6 @@
+import type { IUser } from '@S/type'
 import { ref, type Ref, watch } from 'vue'
 
-export interface IUser {
-  id: number
-  name: string
-}
 export interface AuthStore {
   user: IUser | null
   isAuth: boolean

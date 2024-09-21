@@ -1,15 +1,7 @@
 import { ref } from 'vue'
-import type { IUser } from './auth'
-import type { IGame } from './game'
 import { getAllStatistics, saveStatistics } from '@S/api'
-import { getRandomNumber } from '@S/utils'
-
-interface IStatistic extends Pick<IGame, 'score' | 'time'> {}
-
-export interface IUserStatistic {
-  user: IUser
-  statistic: IStatistic
-}
+import { createFakeStatistic } from '@S/utils'
+import type { IUserStatistic } from '@S/type'
 
 interface IUsersStatisticList {
   items: IUserStatistic[]
@@ -31,31 +23,6 @@ export const addStatisticItem = async (data: IUserStatistic) => {
 export const loadStatistic = async () => {
   statistic.value.updating = true
   statistic.value.items = await getAllStatistics()
-  statistic.value.items.push(...FAKE_STATISTIC)
+  statistic.value.items.push(...createFakeStatistic())
   statistic.value.updating = false
 }
-
-const FAKE_STATISTIC: IUserStatistic[] = [
-  'Петя',
-  'Петя',
-  'Петя',
-  'Вжик123',
-  'Вжик123',
-  'Вжик123',
-  'test4',
-  'test1',
-  '000asd',
-  '000asd',
-  '000asd'
-].map((name) => {
-  return {
-    statistic: {
-      score: getRandomNumber(1, 5),
-      time: parseFloat(`${getRandomNumber(1, 20)}.${getRandomNumber(0, 10)}`)
-    },
-    user: {
-      id: Math.random(),
-      name
-    }
-  }
-})

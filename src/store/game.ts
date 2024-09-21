@@ -1,17 +1,6 @@
-import { ref, type Ref, watch } from 'vue'
-import type { IUser } from './auth'
-
-interface IFood {
-  id: number
-  title: string
-}
-
-export enum GameState {
-  NEW = 'NEW',
-  START = 'START',
-  FINISHED = 'FINISHED',
-  MEMORISED = 'MEMORISED'
-}
+import { computed, ref, watch } from 'vue'
+import type { IFood, IUser } from '@S/type'
+import { FOOD_COOLECTION, GameState } from '@S/constants'
 
 export interface IGame {
   user: IUser | null
@@ -22,6 +11,10 @@ export interface IGame {
   state: GameState
 }
 
+let pinnedTime: number
+let timerId: number
+let elapsed = 0
+
 export const game = ref<IGame>({
   user: null,
   score: 0,
@@ -31,16 +24,37 @@ export const game = ref<IGame>({
   time: 0
 })
 
-let pinnedTime: number
-let timerId: number
-let elapsed = 0
-
 watch(
   () => game.value.result.length,
   (result) => {
     if (result && result === game.value.gameSet.length) stopMemorise()
   }
 )
+
+export const isNew = computed(() => game.value.state === GameState.NEW)
+export const isStart = computed(() => game.value.state === GameState.START)
+export const isMemorise = computed(() => game.value.state === GameState.MEMORISED)
+export const isFinished = computed(() => game.value.state === GameState.FINISHED)
+
+
+const startTimer = () => {
+  pinnedTime = performance.now()
+  timerId = setInterval(() => {
+    elapsed = performance.now() - pinnedTime
+  }, 100)
+}
+
+const stopTimer = () => {
+  clearInterval(timerId)
+}
+
+const calcResult = () => {
+  return game.value.result.reduce((acc, item) => {
+    const isRight = game.value.gameSet.find((r) => r.id === item.id)
+    if (isRight) acc += 1
+    return acc
+  }, 0)
+}
 
 export const addUserToGame = (user: IUser) => {
   game.value.user = user
@@ -71,31 +85,12 @@ export const startGame = () => {
   game.value.state = GameState.START
 }
 
-const startTimer = () => {
-  pinnedTime = performance.now()
-  timerId = setInterval(() => {
-    elapsed = performance.now() - pinnedTime
-  }, 100)
-}
-
-const stopTimer = () => {
-  clearInterval(timerId)
-}
-
-const calcResult = () => {
-  return game.value.result.reduce((acc, item) => {
-    const isRight = game.value.gameSet.find((r) => r.id === item.id)
-    if (isRight) acc += 1
-    return acc
-  }, 0)
-}
-
 export const generateGameSet = () => {
   const result: IFood[] = []
   while (result.length < 5) {
-    const randomIndex = Math.floor(Math.random() * foodCollection.length)
-    if (!result.includes(foodCollection[randomIndex])) {
-      result.push(foodCollection[randomIndex])
+    const randomIndex = Math.floor(Math.random() * FOOD_COOLECTION.length)
+    if (!result.includes(FOOD_COOLECTION[randomIndex])) {
+      result.push(FOOD_COOLECTION[randomIndex])
     }
   }
   return result
@@ -104,46 +99,3 @@ export const generateGameSet = () => {
 export const chooseFood = (food: IFood) => {
   game.value.result.push(food)
 }
-
-export const foodCollection: IFood[] = [
-  {
-    id: 1,
-    title: 'Сосиски'
-  },
-  {
-    id: 2,
-    title: 'Борщ'
-  },
-  {
-    id: 3,
-    title: 'Котлеты'
-  },
-  {
-    id: 4,
-    title: 'Арбуз'
-  },
-  {
-    id: 5,
-    title: 'Киви'
-  },
-  {
-    id: 6,
-    title: 'Сок'
-  },
-  {
-    id: 7,
-    title: 'Рыба'
-  },
-  {
-    id: 8,
-    title: 'Cыр'
-  },
-  {
-    id: 9,
-    title: 'Макароны'
-  },
-  {
-    id: 10,
-    title: 'Колбаса'
-  }
-]
