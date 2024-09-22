@@ -17,7 +17,7 @@ const goBack = () => {
   width: 6rem;
 }
 
-.back-button ::v-deep span {
+.back-button :deep(span) {
   font-size: 2rem;
 }
 </style>

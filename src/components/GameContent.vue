@@ -69,18 +69,30 @@ const isValidFood = (food: IFood) => {
 
     <template v-else-if="isMemorise">
       <h1>Так что же было в холодельнике?(мин. 6 ;)</h1>
-      <div class="food-collection">
-        <div v-for="food of filtredAllFood" @click="$emit('chooseFood', food)" class="food">
-          {{ food.title }}
-        </div>
-      </div>
-      <template v-if="game.result.length">
-        <div class="food-collection choosen">
-          <div v-for="food of game.result" class="food">
+      <div class="food-collection-all">
+        <TransitionGroup tag="div" name="list" class="food-collection">
+          <div
+            v-for="food of filtredAllFood"
+            @click="$emit('chooseFood', food)"
+            class="food"
+            :key="food.id"
+          >
             {{ food.title }}
           </div>
-        </div>
-      </template>
+        </TransitionGroup>
+      </div>
+      <div class="food-collection-result">
+        <TransitionGroup
+          class="food-collection choosen"
+          tag="div"
+          name="list"
+          v-if="game.result.length"
+        >
+          <div v-for="food of game.result" class="food" :key="food.id">
+            {{ food.title }}
+          </div>
+        </TransitionGroup>
+      </div>
     </template>
 
     <template v-else-if="isFinished">
@@ -126,6 +138,23 @@ const isValidFood = (food: IFood) => {
 </template>
 
 <style scoped>
+.food-collection-all {
+  min-height: 13rem;
+}
+.food-collection-result {
+  min-height: 5rem;
+}
+
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.3s ease;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
 .content {
   flex: 1;
   display: flex;

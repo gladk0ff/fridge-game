@@ -61,7 +61,6 @@ onMounted(() => {
 
 .fridge {
   flex: 0.8;
-  /* width: 620px; */
   width: 62rem;
   display: flex;
   align-items: center;
@@ -70,7 +69,6 @@ onMounted(() => {
 
 img {
   max-width: 100%;
-  /* max-height: 700px; */
   max-height: 36rem;
   object-fit: contain;
 }

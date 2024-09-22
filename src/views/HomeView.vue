@@ -90,7 +90,7 @@ footer {
 .logout-button {
   width: 6rem;
 }
-.logout-button ::v-deep span {
+.logout-button :deep(span) {
   font-size: 2rem;
 }
 </style>
