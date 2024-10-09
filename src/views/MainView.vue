@@ -21,6 +21,7 @@ const menus = [
   // }
 ]
 </script>
+
 <template>
   <nav>
     <RouterLink v-for="menu of menus" :to="menu.link">

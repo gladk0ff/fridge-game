@@ -12,11 +12,12 @@ onMounted(() => {
 
 <template>
   <DataTable
+    class="table"
     :value="statistic.items"
     tableStyle="min-width: 50rem;min-height:"
     size="large"
     scrollable
-    scrollHeight="35rem"
+    scrollHeight="45rem"
     :loading="statistic.updating"
   >
     <Column
@@ -43,4 +44,9 @@ onMounted(() => {
   </DataTable>
 </template>
 
-<style scoped></style>
+<style scoped>
+.table {
+  width: 100%;
+  min-height: 45rem;
+}
+</style>
